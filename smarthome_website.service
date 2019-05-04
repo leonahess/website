@@ -1,0 +1,13 @@
+[Unit]
+Description=Website of my DIY smarthome setup
+After=network.target influxdb.service
+
+[Service]
+Type=idle
+WorkingDirectory=/home/leonhess/PiFluxTempHtml/
+ExecStart=/usr/bin/python3 /home/leonhess/SmartFluxDash/smarthome_website.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

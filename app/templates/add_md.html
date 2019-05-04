@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <title>Cool Temperatures</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}"/>
+</head>
+<body style="background-color: aquamarine">
+
+<!-- HEADER -->
+<div class="jumbotron text-center banner">
+    <h1>Index</h1>
+    <h5>
+        <a href="https://github.com/leonhess">
+            <object style="pointer-events: none" width="24" height="24"
+                    data="{{ url_for('static', filename='github.svg') }}"
+                    type="image/svg+xml">
+                Get a modern Browser.
+            </object>
+        </a>
+    </h5>
+</div>
+
+<!-- NAVBAR -->
+<header class="navbar sticky-top navbar-expand navbar-dark flex-column flex-md-row bd-navbar bg-dark">
+    <a class="navbar-brand mr-0 mr-md-2" href="/">L</a>
+
+    <div class="navbar-nav-scroll">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link active" href="/sensors">Sensoren</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/graphs">Graphs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="/add">Add</a>
+            </li>
+        </ul>
+    </div>
+
+    <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+        <li class="nav-item">
+            <a class="nav-link p-2"
+               href="https://github.com/leonhess/smarthome/tree/master/website">GitHub</a>
+        </li>
+        <li class="nav-item">
+            <a tabindex="0" class="nav-link p-2" data-toggle="popover" data-trigger="focus"
+               title="Whoops!"
+               data-content="to be implemented"
+            >Impressum</a>
+        </li>
+        <li class="nav-item">
+            <a tabindex="0" class="nav-link p-2 btn btn-success" data-toggle="popover" data-trigger="focus"
+               title="Whoops!"
+               data-content="to be implemented"
+            >Login</a>
+        </li>
+    </ul>
+</header>
+
+<!-- BODY -->
+<div class="container-fluid">
+
+<form action="{{ url_for('post_add') }}" method="post">
+  <div class="form-group">
+      </br>
+    <input type="text" class="form-control" id="title" name="title" placeholder="Title of Blog entry">
+  </div>
+    <div class="form-group">
+        <input type="text" class="form-control" id="date" name="date">
+    </div>
+  <div class="form-group">
+    <textarea class="form-control" id="body" name="body" rows="4"  placeholder="Body of Blog entry"></textarea>
+  </div>
+    <button type="submit" class="btn btn-primary">speichern</button>
+</form>
+
+</div>
+</body>
+<script>
+    $(function () {
+        $('input[id="date"]').daterangepicker({
+            singleDatePicker: true,
+            showDropdowns: true,
+            minYear: 2010,
+            maxYear: parseInt(moment().format('YYYY'),11),
+            locale: {
+                format: 'DD-MM-YYYY'
+            }
+        })
+    })
+</script>
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+        $('.popover-dismiss').popover({
+            trigger: 'focus'
+        })
+    })
+</script>
+
+</html>

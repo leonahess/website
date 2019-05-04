@@ -1,0 +1,9 @@
+/* Remove Bottom Margin from Jumbotron */
+.banner{
+    background: #ff609a fixed;
+    margin-bottom: 0;
+}
+
+.jumbotron {
+    border-radius: 0;
+}
