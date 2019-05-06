@@ -9,7 +9,7 @@ pipeline {
         label "Pi_3"
       }
       steps {
-        sh "docker build -t hs110 ."
+        sh "docker build -t website ."
       }
     }
     stage('Tag Container') {
