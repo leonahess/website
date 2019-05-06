@@ -62,7 +62,7 @@ pipeline {
         sshagent(credentials: ['d4eb3f5d-d0f5-4964-8bad-038f0d774551']) {
           sh "ssh -o StrictHostKeyChecking=no pi@leon-raspi-cluster-3 docker kill website"
           sh "ssh -o StrictHostKeyChecking=no pi@leon-raspi-cluster-3 docker rm website"
-          sh "ssh -o StrictHostKeyChecking=no pi@leon-raspi-cluster-3 docker run --restart always -d --name=website --privileged fx8350:5000/website:latest"
+          sh "ssh -o StrictHostKeyChecking=no pi@leon-raspi-cluster-3 docker run --restart always -d --name=website -p 5000:5000 fx8350:5000/website:latest"
         }
       }
     }

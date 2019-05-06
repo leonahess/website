@@ -35,8 +35,6 @@ def post_add():
 
 @app.route('/')
 def index():
-    with open("app/static/Nudelsalat.md", mode="r", encoding="utf-8") as file:
-        content = Markup(markdown(file.read()))
     return render_template('index.html', **locals())
 
 
