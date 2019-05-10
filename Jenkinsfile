@@ -23,23 +23,27 @@ pipeline {
         sh "docker tag website leonhess/website:${env.BUILD_NUMBER}"
       }
     }
-    stage('Push to local Registry') {
-      agent {
-        label "Pi_3"
-      }
-      steps {
-        sh "docker push fx8350:5000/website:${env.BUILD_NUMBER}"
-        sh "docker push fx8350:5000/website:latest"
-      }
-    }
-    stage('Push to DockerHub') {
-      agent {
-        label "Pi_3"
-      }
-      steps {
-        withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
-          sh "docker push leonhess/website:${env.BUILD_NUMBER}"
-          sh "docker push leonhess/website:latest"
+    stage('Push to Registries') {
+      parallel {
+        stage('Push to local Registry') {
+          agent {
+            label "Pi_3"
+          }
+          steps {
+            sh "docker push fx8350:5000/website:${env.BUILD_NUMBER}"
+            sh "docker push fx8350:5000/website:latest"
+          }
+        }
+        stage('Push to DockerHub') {
+          agent {
+            label "Pi_3"
+          }
+          steps {
+            withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
+              sh "docker push leonhess/website:${env.BUILD_NUMBER}"
+              sh "docker push leonhess/website:latest"
+            }
+          }
         }
       }
     }
