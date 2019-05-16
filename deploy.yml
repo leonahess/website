@@ -5,8 +5,8 @@
         image: fx8350:5000/website:latest
         name: website
         state: started
-        exposed_ports:
-          - 5000:5000
+        ports:
+          - "5000:5000"
         restart_policy: always
         force_kill: yes
         hostname: "{{ ansible_hostname }}"
