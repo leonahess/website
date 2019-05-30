@@ -95,28 +95,28 @@ def parse(query_result):
     return parse_result
 
 
-def query(field, measurement, tag, divisor):
+def query(field, measurement, tag, divisor, retention):
 
-    query_result = influx.query("""SELECT mean("{}") / {} FROM "{}" WHERE ("name" = '{}') AND (time > now() - 1d)
-        GROUP BY time(10m)fill(0)""".format(field, divisor, measurement, tag))
+    query_result = influx.query("""SELECT mean("{}") / {} FROM "{}"."{}" WHERE ("name" = '{}') AND (time > now() - 1d)
+        GROUP BY time(10m)fill(0)""".format(field, divisor, retention, measurement, tag))
 
     return parse(query_result)
 
 
 @app.route('/graphs')
 def graphs():
-    front_outer = query("temperature", "temperature", "front_window_outside", 1)
-    back_outer = query("temperature", "temperature", "back_window_outside", 1)
-    front_board = query("temperature", "temperature", "front_window_inside", 1)
-    back_board = query("temperature", "temperature", "back_window_inside", 1)
-    desk = query("temperature", "temperature", "desk", 1)
-    front_radiator = query("temperature", "temperature", "front_radiator", 1)
-    back_radiator = query("temperature", "temperature", "back_radiator", 1)
-    back_board_hum = query("humidity", "humidity", "window_back", 1)
-    front_board_hum = query("humidity", "humidity", "window_front", 1)
-    desk_hum = query("humidity", "humidity", "desk", 1)
-    power_computer = query("milliwatt", "power", "Computer", 1000)
-    power_server = query("milliwatt", "power", "Server", 1000)
-    power_small = query("milliwatt", "power", "Kleinteile", 1000)
+    front_outer = query("temperature", "temperature", "front_window_outside", 1, "2w")
+    back_outer = query("temperature", "temperature", "back_window_outside", 1, "2w")
+    front_board = query("temperature", "temperature", "front_window_inside", 1, "2w")
+    back_board = query("temperature", "temperature", "back_window_inside", 1, "2w")
+    desk = query("temperature", "temperature", "desk", 1, "2w")
+    front_radiator = query("temperature", "temperature", "front_radiator", 1, "2w")
+    back_radiator = query("temperature", "temperature", "back_radiator", 1, "2w")
+    back_board_hum = query("humidity", "humidity", "window_back", 1, "2w")
+    front_board_hum = query("humidity", "humidity", "window_front", 1, "2w")
+    desk_hum = query("humidity", "humidity", "desk", 1, "2w")
+    power_computer = query("milliwatt", "power", "Computer", 1000, "12w")
+    power_server = query("milliwatt", "power", "Server", 1000, "12w")
+    power_small = query("milliwatt", "power", "Kleinteile", 1000, "12w")
 
     return render_template('graphs.html', **locals())

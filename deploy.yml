@@ -9,4 +9,5 @@
           - "5000:5000"
         restart_policy: always
         force_kill: yes
+        pull: yes
         hostname: "{{ ansible_hostname }}"
