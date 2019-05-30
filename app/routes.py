@@ -97,7 +97,7 @@ def parse(query_result):
 
 def query(field, measurement, tag, divisor):
 
-    query_result = influx.query("""SELECT mean("{}") / {} FROM "{}" WHERE ("name" = '{}') AND (time > now() - 1d) 
+    query_result = influx.query("""SELECT mean("{}") / {} FROM "{}" WHERE ("name" = '{}') AND (time > now() - 1d)
         GROUP BY time(10m)fill(0)""".format(field, divisor, measurement, tag))
 
     return parse(query_result)
@@ -112,8 +112,8 @@ def graphs():
     desk = query("temperature", "temperature", "desk", 1)
     front_radiator = query("temperature", "temperature", "front_radiator", 1)
     back_radiator = query("temperature", "temperature", "back_radiator", 1)
-    back_board_hum = query("humidity", "humidity", "window_front", 1)
-    front_board_hum = query("humidity", "humidity", "window_back", 1)
+    back_board_hum = query("humidity", "humidity", "window_back", 1)
+    front_board_hum = query("humidity", "humidity", "window_front", 1)
     desk_hum = query("humidity", "humidity", "desk", 1)
     power_computer = query("milliwatt", "power", "Computer", 1000)
     power_server = query("milliwatt", "power", "Server", 1000)

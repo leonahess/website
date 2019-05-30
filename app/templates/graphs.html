@@ -116,7 +116,6 @@
                             ],
                             datasets: [{
                                 label: 'Vorne',
-                                backgroundColor: "#f2a28e",
                                 borderColor: "#f2a28e",
                                 radius: 0,
                                 data: [
@@ -127,7 +126,6 @@
                             },
                                 {
                                     label: 'Hinten',
-                                    backgroundColor: "#ff7575",
                                     borderColor: "#ff7575",
                                     radius: 0,
                                     data: [
@@ -174,7 +172,6 @@
                             ],
                             datasets: [{
                                 label: 'Vorne',
-                                backgroundColor: "#f2a28e",
                                 borderColor: "#f2a28e",
                                 radius: 0,
                                 data: [
@@ -221,7 +218,6 @@
                             ],
                             datasets: [{
                                 label: 'Hinten',
-                                backgroundColor: "#ff7575",
                                 borderColor: "#ff7575",
                                 radius: 0,
                                 data: [
@@ -906,7 +902,7 @@
                 aria-controls="power_col_sm">
             <h1>{{ (power_small | last).data }}W</h1>
         </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#power_col_all" aria-expanded="false"
+        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#power_col_stack" aria-expanded="false"
                 aria-controls="power_col_all">
             <h1>{{ ((power_small | last).data + (power_computer | last).data + (power_server | last).data) | round(2, 'ceil') }}W</h1>
         </button>
@@ -1109,6 +1105,74 @@
                         scales: {
                             yAxes: [{
                                 ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        }
+                    }
+                });
+            </script>
+
+        </div>
+    </div>
+    <div class="row collapse" id="power_col_stack">
+        <div class="col-xl-12">
+            <h5>Tagesverlauf</h5>
+            <canvas id="power_stack" width="600" height="200"></canvas>
+            <script>
+                var ctx = document.getElementById('power_stack').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [
+                            {%  for entry in power_computer %}
+                                "{{ entry.time }}",
+                            {% endfor %}
+                        ],
+                        datasets: [{
+                            label: 'Computer',
+                            radius: 0,
+                            borderColor: "#3e60f2",
+                            data: [
+                                {%  for entry in power_computer %}
+                                    "{{ entry.data }}",
+                                {% endfor %}
+                            ]
+                        },
+                            {
+                                label: 'Server',
+                                radius: 0,
+                                borderColor: "#e062ff",
+                                data: [
+                                    {%  for entry in power_server %}
+                                        "{{ entry.data }}",
+                                    {% endfor %}
+                                ]
+                            },
+                            {
+                                label: 'Stuff',
+                                radius: 0,
+                                borderColor: "#ff7575",
+                                data: [
+                                    {%  for entry in power_small %}
+                                        "{{ entry.data }}",
+                                    {% endfor %}
+                                ]
+                            }]
+                    },
+                    options: {
+                        animation: {
+                            duration: 0
+                        },
+                        tooltips: {
+                            mode: 'x',
+                            intersect: false,
+                            cornerRadius: 10
+                        },
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    stacked: true
                                     beginAtZero: false
                                 }
                             }]
