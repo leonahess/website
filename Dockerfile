@@ -1,6 +1,8 @@
 FROM python:alpine
 
-ADD . .
+ADD app ./app
+ADD smarthome_website.py .
+ADD requirements.txt .
 
 WORKDIR .
 
