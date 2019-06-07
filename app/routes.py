@@ -107,8 +107,8 @@ def query(field, measurement, tag, divisor, retention):
 def graphs():
     front_outer = query("temperature", "temperature", "front_window_outside", 1, "2w")
     back_outer = query("temperature", "temperature", "back_window_outside", 1, "2w")
-    front_board = query("temperature", "temperature", "front_window_inside", 1, "2w")
-    back_board = query("temperature", "temperature", "back_window_inside", 1, "2w")
+    front_board = query("temperature", "temperature", "window_front", 1, "2w")
+    back_board = query("temperature", "temperature", "window_back", 1, "2w")
     desk = query("temperature", "temperature", "desk", 1, "2w")
     front_radiator = query("temperature", "temperature", "front_radiator", 1, "2w")
     back_radiator = query("temperature", "temperature", "back_radiator", 1, "2w")
