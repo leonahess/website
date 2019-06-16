@@ -97,24 +97,106 @@ def parse(query_result):
 
 def query(field, measurement, tag, divisor, retention):
 
-    query_result = influx.query("""SELECT mean("{}") / {} FROM "{}"."{}" WHERE ("name" = '{}') AND (time > now() - 1d)
-        GROUP BY time(10m)fill(0)""".format(field, divisor, retention, measurement, tag))
+    try:
+        query_result = influx.query("""SELECT mean("{}") / {} FROM "{}"."{}" WHERE ("name" = '{}') AND (time > now() - 1d)
+            GROUP BY time(10m)fill(0)""".format(field, divisor, retention, measurement, tag))
+    except:
+        return []
 
     return parse(query_result)
 
 
 @app.route('/graphs')
 def graphs():
-    front_outer = query("temperature", "temperature", "front_window_outside", 1, "2w")
-    back_outer = query("temperature", "temperature", "back_window_outside", 1, "2w")
-    front_board = query("temperature", "temperature", "window_front", 1, "2w")
-    back_board = query("temperature", "temperature", "window_back", 1, "2w")
-    desk = query("temperature", "temperature", "desk", 1, "2w")
-    front_radiator = query("temperature", "temperature", "front_radiator", 1, "2w")
-    back_radiator = query("temperature", "temperature", "back_radiator", 1, "2w")
-    back_board_hum = query("humidity", "humidity", "window_back", 1, "2w")
-    front_board_hum = query("humidity", "humidity", "window_front", 1, "2w")
-    desk_hum = query("humidity", "humidity", "desk", 1, "2w")
+    first = [
+        {
+            "data": [
+                {
+                    "data": query("temperature", "temperature", "front_window_outside", 1, "2w"),
+                    "name": "front_outer",
+                    "borderColor": "#f2a28e",
+                    "nickname": "Vorne"
+                },
+                {
+                    "data": query("temperature", "temperature", "back_window_outside", 1, "2w"),
+                    "name": "back_outer",
+                    "borderColor": "#ff7575",
+                    "nickname": "Hinten"
+                }
+            ],
+            "unit": "°C",
+            "name": "Außentemperatur"
+        },
+        {
+            "data": [
+                {
+                    "data": query("temperature", "temperature", "window_front", 1, "2w"),
+                    "name": "fron_inside",
+                    "borderColor": "#f2a28e",
+                    "nickname": "Vorne"
+                },
+                {
+                    "data": query("temperature", "temperature", "window_back", 1, "2w"),
+                    "name": "back_inside",
+                    "borderColor": "#ff7575",
+                    "nickname": "Hinten"
+                },
+                {
+                    "data": query("temperature", "temperature", "desk", 1, "2w"),
+                    "name": "desk",
+                    "borderColder": "cf5bff",
+                    "nickname": "Tisch"
+                }
+            ],
+            "unit": "°C",
+            "name": "Innentemperatur"
+        },
+        {
+            "data": [
+                {
+                    "data": query("humidity", "humidity", "window_front", 1, "2w"),
+                    "name": "fron_radiator",
+                    "borderColor": "#f2a28e",
+                    "nickname": "Vorne"
+                },
+                {
+                    "data": query("humidity", "humidity", "window_back", 1, "2w"),
+                    "name": "back_radiator",
+                    "borderColor": "#ff7575",
+                    "nickname": "Hinten"
+                },
+                {
+                    "data": query("humidity", "humidity", "desk", 1, "2w"),
+                    "name": "desk",
+                    "borderColder": "cf5bff",
+                    "nickname": "Tisch"
+                }
+            ],
+            "unit": "%",
+            "name": "Luftfeuchtigkeit"
+        },
+        {
+            "data": [
+                {
+                    "data": query("temperature", "temperature", "front_radiator", 1, "2w"),
+                    "name": "fron_radiator",
+                    "borderColor": "#f2a28e",
+                    "nickname": "Vorne"
+                },
+                {
+                    "data": query("temperature", "temperature", "back_radiator", 1, "2w"),
+                    "name": "back_radiator",
+                    "borderColor": "#ff7575",
+                    "nickname": "Hinten"
+                }
+            ],
+            "unit": "°C",
+            "name": "Heizungstemperatur"
+        }
+    ]
+
+
+
     power_computer = query("milliwatt", "power", "Computer", 1000, "12w")
     power_server = query("milliwatt", "power", "Server", 1000, "12w")
     power_small = query("milliwatt", "power", "Kleinteile", 1000, "12w")

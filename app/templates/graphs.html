@@ -84,786 +84,145 @@
         </div>
     </div>
 
-    <!-- Außentemperatur -->
-    <div id="außentemperatur" aria-multiselectable="true">
-        <div class="row" style="background-color: #cfffe5">
-            <button class="col-xl-4 btn" data-toggle="collapse" data-target="#outside_col_all" aria-expanded="false"
-                    aria-controls="outside_col_all" data-parent="#außentemperatur">
-                <h1>Außentemperatur</h1>
-            </button>
-            <button class="col-lg-2 btn" data-toggle="collapse" data-target="#outside_col_v" aria-expanded="false"
-                    aria-controls="outside_col_v" data-parent="#außentemperatur">
-                <h1>{{ (front_outer | last).data }}°C</h1>
-            </button>
-            <button class="col-lg-2 btn" data-toggle="collapse" data-target="#outside_col_h" aria-expanded="false"
-                    aria-controls="outside_col_h" data-parent="#außentemperatur">
-                <h1>{{ (back_outer | last).data }}°C</h1>
-            </button>
-        </div>
-        <div class="row collapse indent" id="outside_col_all">
-            <div class="col-xl-12">
-                <h5>Tagesverlauf</h5>
-                <canvas id="außen_all" width="600" height="200"></canvas>
-                <script>
-                    var ctx = document.getElementById('außen_all').getContext('2d');
-                    var chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: [
-                                {%  for entry in front_outer %}
-                                    "{{ entry.time }}",
-                                {% endfor %}
-                            ],
-                            datasets: [{
-                                label: 'Vorne',
-                                borderColor: "#f2a28e",
-                                radius: 0,
-                                data: [
-                                    {%  for entry in front_outer %}
-                                        "{{ entry.data }}",
+    <!-- First Section -->
+    {% for external in  first %}
+        <div id="{{ external.name }}" aria-multiselectable="true">
+            <div class="row" style="background-color: #cfffe5">
+                <button class="col-xl-4 btn" data-toggle="collapse" data-target="#{{ external.name }}_all" aria-expanded="false"
+                        aria-controls="{{ external.name }}_all" data-parent="#{{ external.name }}">
+                    <h1>{{ external.name }}</h1>
+                </button>
+
+                {% for internal in  external.data %}
+                    <button class="col-lg-2 btn" data-toggle="collapse" data-target="#{{ external.name }}{{ internal.name }}" aria-expanded="false"
+                            aria-controls="{{ external.name }}{{ internal.name }}" data-parent="#{{ external.name }}">
+                        <h1>
+                            {% if internal.data | length %}
+                                {{ (internal.data | last).data }}{{ external.unit }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </h1>
+                    </button>
+                {% endfor %}
+
+            </div>
+
+            <div class="row collapse indent" id="{{ external.name }}_all">
+                <div class="col-xl-12">
+                    <h5>Tagesverlauf</h5>
+                    <canvas id="all_{{ external.name }}" width="600" height="200"></canvas>
+                    <script>
+                        var ctx = document.getElementById('all_{{ external.name }}').getContext('2d');
+                        var chart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: [
+                                    {%  for entry in (external.data | first).data %}
+                                        "{{ entry.time }}",
                                     {% endfor %}
-                                ]
-                            },
-                                {
-                                    label: 'Hinten',
-                                    borderColor: "#ff7575",
-                                    radius: 0,
-                                    data: [
-                                        {%  for entry in back_outer %}
-                                            "{{ entry.data }}",
+                                ],
+                                datasets: [
+                                    {%  for internal in external.data %}
+                                        {% if not loop.last %}
+                                            {
+                                            label: '{{ internal.nickname }}',
+                                            borderColor: "{{ internal.borderColor }}",
+                                            radius: 0,
+                                            data:
+                                                [
+                                                    {%  for entry in internal %}
+                                                        "{{ entry.data }}",
+                                                    {% endfor %}
+                                                ]
+                                            },
+                                        {% else %}
+                                            {
+                                            label: '{{ internal.nickname }}',
+                                            borderColor: "{{ internal.borderColor }}",
+                                            radius: 0,
+                                            data:
+                                                [
+                                                    {%  for entry in internal %}
+                                                        "{{ entry.data }}",
+                                                    {% endfor %}
+                                                ]
+                                            }
+                                        {% endif %}
                                         {% endfor %}
-                                    ]
-                                }]
-                        },
-                        options: {
-                            animation: {
-                                duration: 0
-                            },
-                            tooltips: {
-                                mode: 'x',
-                                intersect: false
-                            },
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: false
-                                    }
-                                }]
+                                        ]},
+                            options: {
+                                animation: {
+                                    duration: 0
+                                },
+                                tooltips: {
+                                    mode: 'x',
+                                    intersect: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: false
+                                        }
+                                    }]
+                                }
                             }
-                        }
-                    });
-                </script>
+                        });
+                    </script>
 
+                </div>
             </div>
-        </div>
-        <div class="row collapse indent" id="outside_col_v">
-            <div class="col-xl-12">
-                <h5>Tagesverlauf</h5>
-                <canvas id="außen_v" width="600" height="200"></canvas>
-                <script>
-                    var ctx = document.getElementById('außen_v').getContext('2d');
-                    var chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: [
-                                {%  for entry in front_outer %}
-                                    "{{ entry.time }}",
-                                {% endfor %}
-                            ],
-                            datasets: [{
-                                label: 'Vorne',
-                                borderColor: "#f2a28e",
-                                radius: 0,
-                                data: [
-                                    {%  for entry in front_outer %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            }]
-                        },
-                        options: {
-                            animation: {
-                                duration: 0
-                            },
-                            tooltips: {
-                                mode: 'x',
-                                intersect: false
-                            },
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: false
+            {% for internal in external.data %}
+                <div class="row collapse indent" id="{{ external.name }}{{ internal.name }}">
+                    <div class="col-xl-12">
+                        <h5>Tagesverlauf</h5>
+                        <canvas id="{{ internal.name }}{{ external.name }}" width="600" height="200"></canvas>
+                        <script>
+                            var ctx = document.getElementById('{{ internal.name }}{{ external.name }}').getContext('2d');
+                            var chart = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: [
+                                        {%  for entry in internal.data %}
+                                            "{{ entry.time }}",
+                                        {% endfor %}
+                                    ],
+                                    datasets: [{
+                                        label: '{{ internal.nickname }}',
+                                        borderColor: "{{ internal.borderColor }}",
+                                        radius: 0,
+                                        data: [
+                                            {%  for entry in internal.data %}
+                                                "{{ entry.data }}",
+                                            {% endfor %}
+                                        ]
+                                    }]
+                                },
+                                options: {
+                                    animation: {
+                                        duration: 0
+                                    },
+                                    tooltips: {
+                                        mode: 'x',
+                                        intersect: false
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: false
+                                            }
+                                        }]
                                     }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-
-            </div>
-        </div>
-        <div class="row collapse" id="outside_col_h">
-            <div class="col-xl-12">
-                <h5>Tagesverlauf</h5>
-                <canvas id="außen_h" width="600" height="200"></canvas>
-                <script>
-                    var ctx = document.getElementById('außen_h').getContext('2d');
-                    var chart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: [
-                                {%  for entry in front_outer %}
-                                    "{{ entry.time }}",
-                                {% endfor %}
-                            ],
-                            datasets: [{
-                                label: 'Hinten',
-                                borderColor: "#ff7575",
-                                radius: 0,
-                                data: [
-                                    {%  for entry in back_outer %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            }]
-                        },
-                        options: {
-                            animation: {
-                                duration: 0
-                            },
-                            tooltips: {
-                                mode: 'x',
-                                intersect: false
-                            },
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: false
-                                    }
-                                }]
-                            }
-                        }
-                    });
-                </script>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Innentemperatur -->
-    <div class="row" style="background-color: #cfffe5">
-        <button class="col-xl-4 btn" data-toggle="collapse" data-target="#board_col_all" aria-expanded="false"
-                aria-controls="board_col_all">
-            <h1>Innentemperatur</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#board_col_v" aria-expanded="false"
-                aria-controls="board_col_v">
-            <h1>{{ (front_board | last).data }}°C</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#board_col_h" aria-expanded="false"
-                aria-controls="board_col_h">
-            <h1>{{ (back_board | last).data }}°C</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#board_col_t" aria-expanded="false"
-                aria-controls="board_col_t">
-            <h1>{{ (desk | last).data }}°C</h1>
-        </button>
-    </div>
-    <div class="row collapse" id="board_col_all">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="inside_all" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('inside_all').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Vorne',
-                            radius: 0,
-                            borderColor: "#f2a28e",
-                            data: [
-                                {%  for entry in front_board %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        },
-                            {
-                                label: 'Tisch',
-                                radius: 0,
-                                borderColor: "#cf5bff",
-                                data: [
-                                    {%  for entry in desk %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            },
-                            {
-                                label: 'Hinten',
-                                radius: 0,
-                                borderColor: "#ff7575",
-                                data: [
-                                    {%  for entry in back_board %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
                                 }
-                            }]
-                        }
-                    }
-                });
-            </script>
+                            });
+                        </script>
+
+                    </div>
+                </div>
+            {% endfor %}
 
         </div>
-    </div>
-    <div class="row collapse" id="board_col_v">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="inside_v" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('inside_v').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Vorne',
-                            radius: 0,
-                            borderColor: "#f2a28e",
-                            data: [
-                                {%  for entry in front_board %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="board_col_h">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="inside_h" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('inside_h').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Hinten',
-                            radius: 0,
-                            borderColor: "#ff7575",
-                            data: [
-                                {%  for entry in back_board %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="board_col_t">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="inside_t" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('inside_t').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Tisch',
-                            radius: 0,
-                            borderColor: "#cf5bff",
-                            data: [
-                                {%  for entry in desk %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-
-    <!-- Luftfeuchtigkeit -->
-    <div class="row" style="background-color: #cfffe5">
-        <button class="col-xl-4 btn" data-toggle="collapse" data-target="#hum_col_all" aria-expanded="false"
-                aria-controls="hum_col_all">
-            <h1>Luftfeuchtigkeit</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#hum_col_v" aria-expanded="false"
-                aria-controls="hum_col_v">
-            <h1>{{ (front_board_hum | last).data }}%</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#hum_col_h" aria-expanded="false"
-                aria-controls="hum_col_h">
-            <h1>{{ (back_board_hum | last).data }}%</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#hum_col_t" aria-expanded="false"
-                aria-controls="hum_col_t">
-            <h1>{{ (desk_hum | last).data }}%</h1>
-        </button>
-    </div>
-    <div class="row collapse" id="hum_col_all">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="hum_all" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('hum_all').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board_hum %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Vorne',
-                            radius: 0,
-                            borderColor: "#f2a28e",
-                            data: [
-                                {%  for entry in front_board_hum %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        },
-                            {
-                                label: 'Tisch',
-                                radius: 0,
-                                borderColor: "#cf5bff",
-                                data: [
-                                    {%  for entry in desk_hum %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            },
-                            {
-                                label: 'Hinten',
-                                radius: 0,
-                                borderColor: "#ff7575",
-                                data: [
-                                    {%  for entry in back_board_hum %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="hum_col_v">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="hum_v" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('hum_v').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board_hum %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Vorne',
-                            radius: 0,
-                            borderColor: "#f2a28e",
-                            data: [
-                                {%  for entry in front_board_hum %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="hum_col_h">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="hum_h" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('hum_h').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board_hum %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Hinten',
-                            radius: 0,
-                            borderColor: "#ff7575",
-                            data: [
-                                {%  for entry in back_board_hum %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="hum_col_t">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="hum_t" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('hum_t').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_board_hum %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Tisch',
-                            radius: 0,
-                            borderColor: "#cf5bff",
-                            data: [
-                                {%  for entry in desk_hum %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-
-    <!-- Heizung -->
-    <div class="row" style="background-color: #cfffe5">
-        <button class="col-xl-4 btn" data-toggle="collapse" data-target="#radiator_col_all" aria-expanded="false"
-                aria-controls="radiator_col_all">
-            <h1>Heizungstemperatur</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#radiator_col_v" aria-expanded="false"
-                aria-controls="radiator_col_v">
-            <h1>{{ (front_radiator | last).data }}°C</h1>
-        </button>
-        <button class="col-lg-2 btn" data-toggle="collapse" data-target="#radiator_col_h" aria-expanded="false"
-                aria-controls="radiator_col_H">
-            <h1>{{ (back_radiator | last).data }}°C</h1>
-        </button>
-    </div>
-    <div class="row collapse" id="radiator_col_all">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="radiator_all" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('radiator_all').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_radiator %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Vorne',
-                            radius: 0,
-                            borderColor: "#f2a28e",
-                            data: [
-                                {%  for entry in front_radiator %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        },
-                            {
-                                label: 'Hinten',
-                                radius: 0,
-                                borderColor: "#ff7575",
-                                data: [
-                                    {%  for entry in back_radiator %}
-                                        "{{ entry.data }}",
-                                    {% endfor %}
-                                ]
-                            }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false,
-                            cornerRadius: 10
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="radiator_col_v">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="radiator_v" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('radiator_v').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_radiator %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Vorne',
-                            radius: 0,
-                            borderColor: "#f2a28e",
-                            data: [
-                                {%  for entry in front_radiator %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false,
-                            cornerRadius: 10
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
-    <div class="row collapse" id="radiator_col_h">
-        <div class="col-xl-12">
-            <h5>Tagesverlauf</h5>
-            <canvas id="radiator_h" width="600" height="200"></canvas>
-            <script>
-                var ctx = document.getElementById('radiator_h').getContext('2d');
-                var chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [
-                            {%  for entry in front_radiator %}
-                                "{{ entry.time }}",
-                            {% endfor %}
-                        ],
-                        datasets: [{
-                            label: 'Hinten',
-                            radius: 0,
-                            borderColor: "#ff7575",
-                            data: [
-                                {%  for entry in back_radiator %}
-                                    "{{ entry.data }}",
-                                {% endfor %}
-                            ]
-                        }]
-                    },
-                    options: {
-                        animation: {
-                            duration: 0
-                        },
-                        tooltips: {
-                            mode: 'x',
-                            intersect: false,
-                            cornerRadius: 10
-                        },
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: false
-                                }
-                            }]
-                        }
-                    }
-                });
-            </script>
-
-        </div>
-    </div>
+    {% endfor %}
 
     <!-- 2nd Header -->
     <div class="row" style="background-color: #a0bfb2">
@@ -1195,16 +554,6 @@
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
 
 </body>
-<script>
-    $(document).ready(function () {
-        $('table.display').DataTable({
-            "lengthMenu": [[10, -1], [10, "All"]],
-            "paging": true,
-            "info": false,
-            "searching": true
-        });
-    });
-</script>
 <script>
     $(function () {
         $('[data-toggle="popover"]').popover();
