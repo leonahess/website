@@ -251,19 +251,43 @@
         </button>
         <button class="col-lg-2 btn" data-toggle="collapse" data-target="#power_col_c" aria-expanded="false"
                 aria-controls="power_col_c">
-            <h1>{{ (power_computer | last).data }}W</h1>
+            <h1>
+                {% if power_computer | length %}
+                    {{ (power_computer | last).data }}W
+                {% else %}
+                    N/A
+                {% endif %}
+            </h1>
         </button>
         <button class="col-lg-2 btn" data-toggle="collapse" data-target="#power_col_se" aria-expanded="false"
                 aria-controls="power_col_se">
-            <h1>{{ (power_server | last).data }}W</h1>
+            <h1>
+                {% if power_server | length %}
+                    {{ (power_server | last).data }}W
+                {% else %}
+                    N/A
+                {% endif %}
+            </h1>
         </button>
         <button class="col-lg-2 btn" data-toggle="collapse" data-target="#power_col_sm" aria-expanded="false"
                 aria-controls="power_col_sm">
-            <h1>{{ (power_small | last).data }}W</h1>
+            <h1>
+                {% if power_small | length %}
+                    {{ (power_small | last).data }}W
+                {% else %}
+                    N/A
+                {% endif %}
+            </h1>
         </button>
         <button class="col-lg-2 btn" data-toggle="collapse" data-target="#power_col_stack" aria-expanded="false"
                 aria-controls="power_col_all">
-            <h1>{{ ((power_small | last).data + (power_computer | last).data + (power_server | last).data) | round(2, 'ceil') }}W</h1>
+            <h1>
+                {% if power_server | length and  power_computer | length and power_small | length %}
+                    {{ ((power_small | last).data + (power_computer | last).data + (power_server | last).data) | round(2, 'ceil') }}W
+                {% else %}
+                    N/A
+                {% endif %}
+            </h1>
         </button>
     </div>
     <div class="row collapse" id="power_col_all">
