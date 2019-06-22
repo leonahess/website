@@ -206,9 +206,9 @@ def graphs():
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    return render_template('500.html', error=e), 500
 
 
 @app.errorhandler(404)
 def internal_server_error(e):
-    return render_template('404.html'), 404
+    return render_template('404.html', error=e), 404
