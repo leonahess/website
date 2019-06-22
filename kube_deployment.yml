@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: website
-          image: fx8350:5000/website:lattest
+          image: fx8350:5000/website:latest
           ports:
             - containerPort: 5000
           resources:
