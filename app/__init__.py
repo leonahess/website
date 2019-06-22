@@ -4,7 +4,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-influx = InfluxDBClient(host="192.168.66.133", port=8086, database='smarthome')
+influx = InfluxDBClient(host="192.168.66.56", port=8086, database='smarthome')
 
 sensors = [
     {
