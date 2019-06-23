@@ -64,7 +64,7 @@ pipeline {
       }
       steps {
         ansiblePlaybook(
-          playbook: 'deploy.yml',
+          playbook: 'deploy_to_swarm.yml',
           credentialsId: 'd4eb3f5d-d0f5-4964-8bad-038f0d774551'
           )
         }

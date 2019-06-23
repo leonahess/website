@@ -1,0 +1,14 @@
+- hosts: swarm
+  tasks:
+    - name: Running the Service
+      docker_swarm_service:
+        image: fx8350:5000/website:latest
+        name: website
+        state: present
+        publish:
+          mode: ingress
+          published_port: 5000
+          targetPort: 5000
+        restart_policy: any
+        replicas: 3
+        hostname: "{{ ansible_hostname }}"
