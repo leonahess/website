@@ -8,7 +8,6 @@
         publish:
           - mode: ingress
             published_port: 5000
-            targetPort: 5000
-        restart_policy: any
+            target_port: 5000
         replicas: 3
         hostname: "{{ ansible_hostname }}"
