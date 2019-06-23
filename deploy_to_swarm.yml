@@ -6,9 +6,9 @@
         name: website
         state: present
         publish:
-          mode: ingress
-          published_port: 5000
-          targetPort: 5000
+          - mode: ingress
+            published_port: 5000
+            targetPort: 5000
         restart_policy: any
         replicas: 3
         hostname: "{{ ansible_hostname }}"

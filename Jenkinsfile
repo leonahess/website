@@ -58,7 +58,7 @@ pipeline {
         sh "docker rmi leonhess/website:${env.BUILD_NUMBER}"
       }
     }
-    stage('Deploy to leon-raspi-cluster-3') {
+    stage('Deploy to swarm') {
       agent {
         label "master"
       }
