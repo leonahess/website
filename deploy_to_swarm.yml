@@ -5,7 +5,6 @@
         image: fx8350:5000/website:latest
         name: website
         state: present
-        force_update: yes
         resolve_image: yes
         publish:
           - mode: ingress
