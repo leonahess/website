@@ -18,9 +18,7 @@ pipeline {
       }
       steps {
         sh "docker tag website fx8350:5000/website:latest"
-        sh "docker tag website fx8350:5000/website:${env.BUILD_NUMBER}"
         sh "docker tag website leonhess/website:latest"
-        sh "docker tag website leonhess/website:${env.BUILD_NUMBER}"
       }
     }
     stage('Push to Registries') {
@@ -30,7 +28,6 @@ pipeline {
             label "Pi_3"
           }
           steps {
-            sh "docker push fx8350:5000/website:${env.BUILD_NUMBER}"
             sh "docker push fx8350:5000/website:latest"
           }
         }
@@ -40,7 +37,6 @@ pipeline {
           }
           steps {
             withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
-              sh "docker push leonhess/website:${env.BUILD_NUMBER}"
               sh "docker push leonhess/website:latest"
             }
           }
@@ -53,9 +49,7 @@ pipeline {
       }
       steps {
         sh "docker rmi fx8350:5000/website:latest"
-        sh "docker rmi fx8350:5000/website:${env.BUILD_NUMBER}"
         sh "docker rmi leonhess/website:latest"
-        sh "docker rmi leonhess/website:${env.BUILD_NUMBER}"
       }
     }
     stage('Deploy to swarm') {
