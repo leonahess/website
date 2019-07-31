@@ -1,4 +1,4 @@
-- hosts: swarm
+- hosts: swarm_master
   tasks:
     - name: Running the Service
       docker_swarm_service:
